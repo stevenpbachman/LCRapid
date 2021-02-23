@@ -9,22 +9,21 @@
 #' name_search_gbif("Poa annua L.")
 
 # working GBIF name search function
-name_search_gbif = function (name) {
+# need this to work with batch - see below
+# batch_test = SRLI_combined_MASTER[1:10, 4]
+# batch_search <- purrr::map_dfr(batch_test$BRAHMS_orig_name_auth,name_search_gbif)
 
+name_search_gbif = function (name) {
   # set up the data.frame
   options = data.frame(
     usageKey = NA_integer_,
-    acceptedUsageKey = NA_character_,
     scientificName = NA_character_,
-    rank = NA_character_,
-    status = NA_character_,
     confidence = NA_integer_,
-    family = NA_character_,
-    acceptedSpecies = NA_character_
+    family = NA_character_
   )
 
   # search using verbose to get fuzy alternatives
-  gbif_results =rgbif::name_backbone_verbose(
+  gbif_results = rgbif::name_backbone_verbose(
     name = name,
     rank = 'species',
     kingdom = 'Plantae',
@@ -34,23 +33,31 @@ name_search_gbif = function (name) {
   # bind together in case there are missing data
   merged = dplyr::bind_rows(gbif_results$alternatives, gbif_results$data)
 
-  if (nrow(merged) > 1 | merged$matchType[1] != "HIGHERRANK") {
-    # change column names
-    merged = dplyr::rename(merged, acceptedSpecies=species)
+  # catch when search term is too vague or non-plant
+  if (merged$matchType[1] == "HIGHERRANK") {
 
-    if (!"acceptedUsageKey" %in% colnames(merged)) {
-      merged$acceptedUsageKey = NA_character_
-    }
+    options = data.frame(
+      searchName = name,
+      usageKey = NA_integer_,
+      scientificName = "No match",
+      confidence = NA_integer_,
+      family = NA_character_
+    )
 
-    # subset the data with the fields you want
-    options = dplyr::select(merged, colnames(options))
-
-    # arrange table in descending order to show best guess at top of table
-    options = dplyr::arrange(options, desc(confidence), status)
   }
 
-  # add the original search name
+  else {
+
+  options = merged %>%
+    dplyr::select(colnames(options)) %>%
+    dplyr::arrange(desc(confidence))
+
   options$searchName = name
 
-  options
+  options = dplyr::select(options, c(searchName, usageKey, scientificName, confidence))
+
+  }
+
+  return(options)
+
 }
