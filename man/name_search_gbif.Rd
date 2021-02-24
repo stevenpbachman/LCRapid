@@ -7,15 +7,26 @@
 name_search_gbif(name)
 }
 \arguments{
-\item{name}{A plant species binomial with or without author e.g. Poa annua L.}
+\item{name}{A scientific plant species name. Better results can be obtained
+when author is included e.g. Poa annua L.}
 }
 \value{
-Returns a data frame with IPNI identifier, binomial, author and accepted status
+Returns a data frame with initial search term \code{searchName}, GBIF taxon key \code{usageKey}, GBIF scientific
+name \code{scientificName}, and a measure of \code{confidence} in the match. When there is no match it returns a value
+of "No match" under the \code{scientificName} field.
 }
 \description{
-This function uses rgbif package to search a name against the GBIF names backbone.
+This function uses the \code{rgbif} package \url{https://docs.ropensci.org/rgbif/index.html}
+to query a scientific plant name against the GBIF names backbone - see \url{https://www.gbif.org/}.
+It restricts the result to species rank constrained to kingdom = 'Plantae'.
+This function uses the \code{rgbif::name_backbone_verbose} function.
 }
 \examples{
+# single name search
 name_search_gbif("Poa annua L.")
+
+# Or, search multiple names using purrr::map_dfr
+names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
+names_out <- purrr::map_dfr(names, name_search_gbif)
 }
 \keyword{GBIF}

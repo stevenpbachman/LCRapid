@@ -1,17 +1,25 @@
 #' @title Search plant name against GBIF names backbone
 #'
-#' @description This function uses rgbif package to search a name against the GBIF names backbone.
-#' @param name A plant species binomial with or without author e.g. Poa annua L.
+#' @description This function uses the \code{rgbif} package \url{https://docs.ropensci.org/rgbif/index.html}
+#'     to query a scientific plant name against the GBIF names backbone - see \url{https://www.gbif.org/}.
+#'     It restricts the result to species rank constrained to kingdom = 'Plantae'.
+#'     This function uses the \code{rgbif::name_backbone_verbose} function.
+#' @param name A scientific plant species name. Better results can be obtained
+#'     when author is included e.g. Poa annua L.
 #' @keywords GBIF
 #' @export
-#' @return Returns a data frame with IPNI identifier, binomial, author and accepted status
+#' @return Returns a data frame with initial search term \code{searchName}, GBIF taxon key \code{usageKey}, GBIF scientific
+#'     name \code{scientificName}, and a measure of \code{confidence} in the match. When there is no match it returns a value
+#'      of "No match" under the \code{scientificName} field.
 #' @examples
+#' # single name search
 #' name_search_gbif("Poa annua L.")
+#'
+#' # Or, search multiple names using purrr::map_dfr
+#' names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
+#' names_out <- purrr::map_dfr(names, name_search_gbif)
 
-# working GBIF name search function
-# need this to work with batch - see below
-# batch_test = SRLI_combined_MASTER[1:10, 4]
-# batch_search <- purrr::map_dfr(batch_test$BRAHMS_orig_name_auth,name_search_gbif)
+# add this for testing: "Aragalus casteteri"
 
 name_search_gbif = function (name) {
   # set up the data.frame
@@ -49,9 +57,14 @@ name_search_gbif = function (name) {
   else {
 
   options = merged %>%
+    # in case higher ranks are returned
+    dplyr::filter(rank=="SPECIES") %>%
+    # match to options df
     dplyr::select(colnames(options)) %>%
+    # show highest confidence match first
     dplyr::arrange(desc(confidence))
 
+  # add the initial search term
   options$searchName = name
 
   options = dplyr::select(options, c(searchName, usageKey, scientificName, confidence))
