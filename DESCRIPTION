@@ -16,7 +16,8 @@ RoxygenNote: 7.1.1
 URL: https://github.com/stevenpbachman/LCRapid
 BugReports: https://github.com/stevenpbachman/LCRapid/issues
 Suggests: 
-    spelling
+    spelling,
+    testthat
 Language: en-US
 Imports: 
     tibble,

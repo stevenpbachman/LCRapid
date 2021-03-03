@@ -13,7 +13,7 @@ when author is included e.g. Poa annua L.}
 \value{
 Returns a data frame with initial search term \code{searchName}, GBIF taxon key \code{usageKey}, GBIF scientific
 name \code{scientificName}, and a measure of \code{confidence} in the match. When there is no match it returns a value
-of "No match" under the \code{scientificName} field.
+of "no_match" under the \code{confidence} field.
 }
 \description{
 This function uses the \code{rgbif} package \url{https://docs.ropensci.org/rgbif/index.html}
@@ -27,6 +27,7 @@ name_search_gbif("Poa annua L.")
 
 # Or, search multiple names using purrr::map_dfr
 names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
-names_out <- purrr::map_dfr(names, name_search_gbif)
+
+#names_out <- purrr::map_dfr(names, name_search_gbif)
 }
 \keyword{GBIF}

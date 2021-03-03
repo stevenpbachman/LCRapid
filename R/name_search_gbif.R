@@ -10,18 +10,20 @@
 #' @export
 #' @return Returns a data frame with initial search term \code{searchName}, GBIF taxon key \code{usageKey}, GBIF scientific
 #'     name \code{scientificName}, and a measure of \code{confidence} in the match. When there is no match it returns a value
-#'      of "No match" under the \code{scientificName} field.
+#'      of "no_match" under the \code{confidence} field.
 #' @examples
 #' # single name search
 #' name_search_gbif("Poa annua L.")
 #'
 #' # Or, search multiple names using purrr::map_dfr
 #' names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
-#' names_out <- purrr::map_dfr(names, name_search_gbif)
+#'
+#' #names_out <- purrr::map_dfr(names, name_search_gbif)
 
 # add this for testing: "Aragalus casteteri"
 
 name_search_gbif = function (name) {
+
   # set up the data.frame
   options = data.frame(
     usageKey = NA_integer_,
@@ -47,9 +49,10 @@ name_search_gbif = function (name) {
     options = data.frame(
       searchName = name,
       usageKey = NA_integer_,
-      scientificName = "No match",
-      confidence = NA_integer_,
-      family = NA_character_
+      scientificName = name,
+      confidence = "no_match",
+      family = NA_character_,
+      stringsAsFactors = FALSE
     )
 
   }
@@ -68,6 +71,8 @@ name_search_gbif = function (name) {
   options$searchName = name
 
   options = dplyr::select(options, c(searchName, usageKey, scientificName, confidence))
+
+  # add warning if name matched to multiple
 
   }
 
