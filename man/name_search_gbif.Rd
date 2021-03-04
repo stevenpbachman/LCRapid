@@ -29,5 +29,6 @@ name_search_gbif("Poa annua L.")
 names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
 
 #names_out <- purrr::map_dfr(names, name_search_gbif)
+
 }
 \keyword{GBIF}

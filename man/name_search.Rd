@@ -2,7 +2,7 @@
 % Please edit documentation in R/name_search.R
 \name{name_search}
 \alias{name_search}
-\title{Search plant name against GBIF, KNMS and POWO names backbone}
+\title{Search plant name against GBIF, KNMS and POWO names backbone.}
 \usage{
 name_search(name)
 }
@@ -14,7 +14,8 @@ when author is included e.g. Poa annua L.}
 Returns a data frame with ...
 }
 \description{
-Perform a fuzzy search against three names list to get best match and POWO taxonomic status
+Perform a fuzzy search against three names list to get best
+match and POWO taxonomic status.
 }
 \examples{
 # single name search
@@ -23,6 +24,7 @@ name_search("Poa annua L.")
 # Or, search multiple names using purrr::map_dfr
 names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
 names_out <- purrr::map_dfr(names, name_search)
+
 }
 \keyword{GBIF,}
 \keyword{KNMS,}

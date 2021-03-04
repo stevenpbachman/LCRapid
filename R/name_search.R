@@ -1,11 +1,13 @@
-#' @title Search plant name against GBIF, KNMS and POWO names backbone
+#' Search plant name against GBIF, KNMS and POWO names backbone.
 #'
-#' @description Perform a fuzzy search against three names list to get best match and POWO taxonomic status
+#' Perform a fuzzy search against three names list to get best
+#' match and POWO taxonomic status.
+#'
 #' @param name A scientific plant species name. Better results can be obtained
 #'     when author is included e.g. Poa annua L.
-#' @keywords GBIF, KNMS, Plants of the World Online
-#' @export
+#'
 #' @return Returns a data frame with ...
+#'
 #' @examples
 #' # single name search
 #' name_search("Poa annua L.")
@@ -13,6 +15,14 @@
 #' # Or, search multiple names using purrr::map_dfr
 #' names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
 #' names_out <- purrr::map_dfr(names, name_search)
+#'
+#' @keywords GBIF, KNMS, Plants of the World Online
+#'
+#' @import dplyr
+#' @importFrom kewr match_knms lookup_wcvp tidy
+#' @importFrom rlang .data
+#'
+#' @export
 
 # check Baz methods to get names - include synonyms
 # check for homotypic
@@ -25,33 +35,32 @@ name_search = function(name){
   gbif_result = name_search_gbif(name)
 
   # second search - plug search results into KNMS to get match against Kew names lists
-  knms_check = kewr::match_knms(gbif_result$scientificName)
-  knms_format = format(knms_check)
+  knms_check = match_knms(gbif_result$scientificName)
+  knms_check = tidy(knms_check)
 
   # join up the results and filter on maximum confidence and remove IPNI ID duplicates
-  gbif_knms = dplyr::bind_cols(knms_format, gbif_result) %>%
+  gbif_knms = left_join(gbif_result, knms_check, by=c("scientificName"="submitted"))
 
-    # filter only on those that matched KNMS
-    dplyr::filter(matched == "TRUE") %>%
+  # filter only on those that matched KNMS
+  gbif_knms = filter(gbif_knms, .data$matched == "TRUE")
 
-    # remove duplicates if KNMS matched more than one
-    dplyr::distinct(ipni_id, .keep_all = TRUE) %>%
+  # remove duplicates if KNMS matched more than one
+  gbif_knms = distinct(gbif_knms, .data$ipni_id, .keep_all = TRUE)
 
-    # and filter on maximum confidence from GBIF search
-    # ensures there is only one result
-    dplyr::filter(confidence == max(confidence))
+  # and filter on maximum confidence from GBIF search
+  # ensures there is only one result
+  gbif_knms = slice_max(gbif_knms, .data$confidence, n=1)
 
-  # third search - check POWO status
-  powo_check = kewr::lookup_powo(gbif_knms$ipni_id)
-  powo_format = format(powo_check) %>%
-
-    # select the taxonomic status column
-    dplyr::select(taxonomicStatus)
+  # third search - check WCVP status
+  wcvp_check = lookup_wcvp(gbif_knms$ipni_id)
+  wcvp_check = tidy(wcvp_check)
+  # select the taxonomic status column
+  wcvp_check = select(wcvp_check, .data$id, .data$status)
 
   # join up results again
-  gbif_knms_powo = dplyr::bind_cols(powo_format, gbif_knms)
+  results = left_join(gbif_knms, wcvp_check, by=c("ipni_id"="id"))
 
-  return(gbif_knms_powo)
+  results
 }
 
 

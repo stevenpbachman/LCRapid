@@ -26,4 +26,5 @@ Imports:
     stringr,
     kewr,
     rgbif,
-    magrittr
+    magrittr,
+    rlang
