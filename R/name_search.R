@@ -1,6 +1,6 @@
 #' Search plant name against GBIF, KNMS and POWO names backbone.
 #'
-#' Perform a fuzzy search against three names list to get best
+#' Perform a fuzzy search against three names lists to get best
 #' match and POWO taxonomic status.
 #'
 #' @param name A scientific plant species name. Better results can be obtained
@@ -14,7 +14,11 @@
 #'
 #' # Or, search multiple names using purrr::map_dfr
 #' names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
+#'
+#' if (requireNamespace("purrr", quietly = TRUE)) {
 #' names_out <- purrr::map_dfr(names, name_search)
+#' }
+
 #'
 #' @keywords GBIF, KNMS, Plants of the World Online
 #'
@@ -31,14 +35,23 @@
 
 name_search = function(name){
 
+  # set up default results table
+  default_tbl = name_tbl_(name)
+
   # first search - fuzzy matching to GBIF names backbone
   gbif_result = name_search_gbif(name)
+
+  # catch when search term is too vague or non-plant
+  if (is.na(gbif_result$usageKey)[1]) {
+
+  results = default_tbl
+  } else {
 
   # second search - plug search results into KNMS to get match against Kew names lists
   knms_check = match_knms(gbif_result$scientificName)
   knms_check = tidy(knms_check)
 
-  # join up the results and filter on maximum confidence and remove IPNI ID duplicates
+  # join up the results
   gbif_knms = left_join(gbif_result, knms_check, by=c("scientificName"="submitted"))
 
   # filter only on those that matched KNMS
@@ -60,8 +73,30 @@ name_search = function(name){
   # join up results again
   results = left_join(gbif_knms, wcvp_check, by=c("ipni_id"="id"))
 
+  }
+
   results
 }
+
+#' Generate the default table for name search results
+#'
+#' @importFrom tibble tibble
+#'
+#' @noRd
+name_tbl_ = function(query) {
+  tibble(
+    searchName = query,
+    usageKey = NA_integer_,
+    scientificName = NA_character_,
+    confidence = NA_integer_,
+    family = NA_character_,
+    matched = NA,
+    ipni_id = NA_character_,
+    matched_record = NA_character_,
+    status = NA_character_,
+  )
+}
+
 
 
 

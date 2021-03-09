@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "stevenpbachman@gmail.com",
            comment = c(ORCID = "0000-0003-1085-6075"))
-Description: Quickly determine if a plant species is likely to be non-threatened (Least Concern - See IUCN Red List). Generate minimal documentation for a Least Concern species and submit to IUCN Red List via https://connect.iucnredlist.org/ (registration needed) 
+Description: Quickly determine if a plant species is likely to be non-threatened (Least Concern - See IUCN Red List). Generate minimal documentation for a Least Concern species and submit to IUCN Red List via https://connect.iucnredlist.org/ (registration needed). 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -17,7 +17,8 @@ URL: https://github.com/stevenpbachman/LCRapid
 BugReports: https://github.com/stevenpbachman/LCRapid/issues
 Suggests: 
     spelling,
-    testthat
+    testthat,
+    purrr
 Language: en-US
 Imports: 
     tibble,

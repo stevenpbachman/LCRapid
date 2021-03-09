@@ -14,7 +14,7 @@ when author is included e.g. Poa annua L.}
 Returns a data frame with ...
 }
 \description{
-Perform a fuzzy search against three names list to get best
+Perform a fuzzy search against three names lists to get best
 match and POWO taxonomic status.
 }
 \examples{
@@ -23,7 +23,10 @@ name_search("Poa annua L.")
 
 # Or, search multiple names using purrr::map_dfr
 names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
+
+if (requireNamespace("purrr", quietly = TRUE)) {
 names_out <- purrr::map_dfr(names, name_search)
+}
 
 }
 \keyword{GBIF,}
