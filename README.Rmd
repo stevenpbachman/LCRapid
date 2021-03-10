@@ -17,44 +17,43 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of LCRapid is to generate a rapid Least Concern Red List assessment for plant species
+An R package to generate a rapid Least Concern Red List assessment for plant species
+
+## Overview
+Quickly determine if a plant species is likely to be non-threatened (Least Concern - See [IUCN Red List](https://www.iucnredlist.org/)). Generate minimal documentation for a Least Concern species and submit to the IUCN Red List via [SIS Connect](https://connect.iucnredlist.org/) (registration needed)
 
 ## Installation
 
-You can install the released version of LCRapid from [CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("LCRapid")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+Not yet on [CRAN](https://CRAN.R-project.org), but you can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("stevenpbachman/LCRapid")
 ```
-## Example
 
-This is a basic example which shows you how to solve a common problem:
+## Usage
+
+The workflow is broken into several steps and each step can be run independently:
+
+1.	`name_search` check name status against taxonomic backbones 
+2.	`get_points` gather occurrence records 
+3.	`filter_native` clean points with native range
+4.	`calculate_metrics` calculate metrics
+5.	`apply_thresholds` assess whether species is Least Concern
+6.	`make_files` generate data files or reports
+ 
+The batch option allows you to run multiple species.
+
+
+### Getting started
 
 ```{r example}
 library(LCRapid)
-## basic example code
-name_search_gbif("Poa annua L.")
+## check a name against GBIF, Kew Names Matching Service and Plants of the World Online
+name_search("Poa annua L.")
+
+#get_points()
+#etc...
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
 
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!

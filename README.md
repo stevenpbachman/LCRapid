@@ -7,62 +7,53 @@
 
 <!-- badges: end -->
 
-The goal of LCRapid is to generate a rapid Least Concern Red List
-assessment for plant species
+An R package to generate a rapid Least Concern Red List assessment for
+plant species
+
+## Overview
+
+Quickly determine if a plant species is likely to be non-threatened
+(Least Concern - See [IUCN Red List](https://www.iucnredlist.org/)).
+Generate minimal documentation for a Least Concern species and submit to
+the IUCN Red List via [SIS Connect](https://connect.iucnredlist.org/)
+(registration needed)
 
 ## Installation
 
-You can install the released version of LCRapid from
-[CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("LCRapid")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+Not yet on [CRAN](https://CRAN.R-project.org), but you can install the
+development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("stevenpbachman/LCRapid")
 ```
 
-## Example
+## Usage
 
-This is a basic example which shows you how to solve a common problem:
+The workflow is broken into several steps and each step can be run
+independently:
+
+1.  `name_search` check name status against taxonomic backbones
+2.  `get_points` gather occurrence records
+3.  `filter_native` clean points with native range
+4.  `calculate_metrics` calculate metrics
+5.  `apply_thresholds` assess whether species is Least Concern
+6.  `make_files` generate data files or reports
+
+The batch option allows you to run multiple species.
+
+### Getting started
 
 ``` r
 library(LCRapid)
-## basic example code
-name_search_gbif("Poa annua L.")
-#> # A tibble: 3 x 9
-#>   usageKey acceptedUsageKey scientificName rank  status confidence family
-#>      <int>            <int> <chr>          <chr> <chr>       <int> <chr> 
-#> 1  2704179               NA Poa annua L.   SPEC~ ACCEP~        100 Poace~
-#> 2  8422205          2704194 Poa annua Cha~ SPEC~ SYNON~         83 Poace~
-#> 3  7730008               NA Poa annua Ste~ SPEC~ DOUBT~         78 Poace~
-#> # ... with 2 more variables: acceptedSpecies <chr>, searchName <chr>
+## check a name against GBIF, Kew Names Matching Service and Plants of the World Online
+name_search("Poa annua L.")
+#> # A tibble: 1 x 9
+#>   searchName   usageKey scientificName confidence family  matched ipni_id 
+#>   <chr>           <int> <chr>               <int> <chr>   <lgl>   <chr>   
+#> 1 Poa annua L.  2704179 Poa annua L.          100 Poaceae TRUE    320035-2
+#> # ... with 2 more variables: matched_record <chr>, status <chr>
+
+#get_points()
+#etc...
 ```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub\!
