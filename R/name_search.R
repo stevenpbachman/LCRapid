@@ -6,6 +6,9 @@
 #' @param name A scientific plant species name. Better results can be obtained
 #'     when author is included e.g. Poa annua L.
 #'
+#' @param homosyn_replace If matched name is classified as a homotypic synonym, the
+#'  accepted name is returned
+#'
 #' @return Returns a data frame with ...
 #'
 #' @examples
@@ -18,6 +21,9 @@
 #' if (requireNamespace("purrr", quietly = TRUE)) {
 #' names_out <- purrr::map_dfr(names, name_search)
 #' }
+#'
+#' # if your matched name is a homotypic synonym, you can replace it with the WCVP accepted name
+#' name_search("Acacia torrei")
 
 #'
 #' @keywords GBIF, KNMS, Plants of the World Online
@@ -28,12 +34,9 @@
 #'
 #' @export
 
-# check Baz methods to get names - include synonyms
-# check for homotypic
-# matched their names to the WCVP
-# updated the accepted names of assessments matched to homotypic synonyms.
+# for WCVP - if match = homotypic synonym, also get the accepted name?
 
-name_search = function(name){
+name_search = function(name, homosyn_replace = F){
 
   # set up default results table
   default_tbl = name_tbl_(name)
@@ -73,9 +76,28 @@ name_search = function(name){
   # join up results again
   results = left_join(gbif_knms, wcvp_check, by=c("ipni_id"="id"))
 
+  # replace homotypic synonym with accepted name
+  if (homosyn_replace == TRUE) {
+
+    if (results$status == "homotypic synonym") {
+
+      # get the accepted name
+      acc = lookup_wcvp(results$ipni_id)
+      acc = paste(acc$accepted$name, acc$accepted$author, sep = " ")
+
+      # now plug back into name search
+      results = name_search(acc)
+
+    } else {
+
+      results = results
+
+    }
   }
 
   results
+
+  }
 }
 
 #' Generate the default table for name search results
@@ -93,7 +115,7 @@ name_tbl_ = function(query) {
     matched = NA,
     ipni_id = NA_character_,
     matched_record = NA_character_,
-    status = NA_character_,
+    status = NA_character_
   )
 }
 

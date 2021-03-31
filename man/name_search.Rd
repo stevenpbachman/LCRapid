@@ -4,11 +4,14 @@
 \alias{name_search}
 \title{Search plant name against GBIF, KNMS and POWO names backbone.}
 \usage{
-name_search(name)
+name_search(name, homosyn_replace = F)
 }
 \arguments{
 \item{name}{A scientific plant species name. Better results can be obtained
 when author is included e.g. Poa annua L.}
+
+\item{homosyn_replace}{If matched name is classified as a homotypic synonym, the
+accepted name is returned}
 }
 \value{
 Returns a data frame with ...
@@ -27,6 +30,9 @@ names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
 if (requireNamespace("purrr", quietly = TRUE)) {
 names_out <- purrr::map_dfr(names, name_search)
 }
+
+# if your matched name is a homotypic synonym, you can replace it with the WCVP accepted name
+name_search("Acacia torrei")
 
 }
 \keyword{GBIF,}

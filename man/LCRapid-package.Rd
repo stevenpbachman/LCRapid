@@ -6,7 +6,7 @@
 \alias{LCRapid-package}
 \title{LCRapid: Generate a rapid Least Concern Red List assessment for plant species}
 \description{
-Quickly determine if a plant species is likely to be non-threatened (Least Concern - See IUCN Red List \url{https://www.iucnredlist.org/}). Generate minimal documentation for a Least Concern species and submit to IUCN Red List via \url{https://connect.iucnredlist.org/} (registration needed).
+Quickly determine if a plant species is likely to be non-threatened (Least Concern - See IUCN Red List). Generate minimal documentation for a Least Concern species and submit to IUCN Red List via https://connect.iucnredlist.org/ (registration needed).
 }
 \seealso{
 Useful links:
