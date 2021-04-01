@@ -23,7 +23,8 @@
 #' }
 #'
 #' # if your matched name is a homotypic synonym, you can replace it with the WCVP accepted name
-#' name_search("Acacia torrei")
+#' # Results retain the orignal search name, and all other fields are replaced with the accepted name
+#' name_search("Acacia torrei", homosyn_replace = T)
 
 #'
 #' @keywords GBIF, KNMS, Plants of the World Online
@@ -33,8 +34,6 @@
 #' @importFrom rlang .data
 #'
 #' @export
-
-# for WCVP - if match = homotypic synonym, also get the accepted name?
 
 name_search = function(name, homosyn_replace = F){
 
@@ -46,9 +45,8 @@ name_search = function(name, homosyn_replace = F){
 
   # catch when search term is too vague or non-plant
   if (is.na(gbif_result$usageKey)[1]) {
-
-  results = default_tbl
-  } else {
+  return(default_tbl)
+  }
 
   # second search - plug search results into KNMS to get match against Kew names lists
   knms_check = match_knms(gbif_result$scientificName)
@@ -77,27 +75,18 @@ name_search = function(name, homosyn_replace = F){
   results = left_join(gbif_knms, wcvp_check, by=c("ipni_id"="id"))
 
   # replace homotypic synonym with accepted name
-  if (homosyn_replace == TRUE) {
+  if (homosyn_replace & results$status == "homotypic synonym") {
 
-    if (results$status == "homotypic synonym") {
+  # get the accepted name
+  acc = lookup_wcvp(results$ipni_id)
+  acc = paste(acc$accepted$name, acc$accepted$author, sep = " ")
 
-      # get the accepted name
-      acc = lookup_wcvp(results$ipni_id)
-      acc = paste(acc$accepted$name, acc$accepted$author, sep = " ")
-
-      # now plug back into name search
-      results = name_search(acc)
-
-    } else {
-
-      results = results
-
-    }
+  # now plug back into name search
+  results = name_search(acc)
+  results = mutate(results, searchName = name)
   }
 
-  results
-
-  }
+  return(results)
 }
 
 #' Generate the default table for name search results
