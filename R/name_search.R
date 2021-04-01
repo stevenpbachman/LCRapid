@@ -24,7 +24,12 @@
 #'
 #' # if your matched name is a homotypic synonym, you can replace it with the WCVP accepted name
 #' # Results retain the orignal search name, and all other fields are replaced with the accepted name
-#' name_search("Acacia torrei", homosyn_replace = T)
+#' name_search("Acacia torrei", homosyn_replace = TRUE)
+#'
+#' # and same for multiple species
+#' if (requireNamespace("purrr", quietly = TRUE)) {
+#' names_out <- purrr::map_dfr(names, name_search, homosyn_replace = TRUE)
+#' }
 
 #'
 #' @keywords GBIF, KNMS, Plants of the World Online
@@ -99,6 +104,7 @@ name_tbl_ = function(query) {
     searchName = query,
     usageKey = NA_integer_,
     scientificName = NA_character_,
+    rank = NA_character_,
     confidence = NA_integer_,
     family = NA_character_,
     matched = NA,

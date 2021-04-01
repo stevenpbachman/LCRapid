@@ -43,7 +43,7 @@ name_search_gbif = function (name) {
   # search using verbose to get fuzzy alternatives
   matches = name_backbone_verbose(
     name = name,
-    rank = 'species',
+    #rank = 'species', # restrict to species?
     kingdom = 'Plantae',
     strict = FALSE
   )
@@ -58,7 +58,10 @@ name_search_gbif = function (name) {
   if (no_match | all_higher) {
     results = default_tbl
   } else {
-    results = filter(matches, .data$rank == "SPECIES")
+
+    # if we want to filter on species rank
+    #results = filter(matches, .data$rank == "SPECIES")
+    results = matches
 
     results$searchName = name
 
@@ -79,6 +82,7 @@ gbif_name_tbl_ = function(query) {
     searchName = query,
     usageKey = NA_integer_,
     scientificName = NA_character_,
+    rank = NA_character_,
     confidence = NA_integer_,
     family = NA_character_
   )
