@@ -25,14 +25,14 @@ match and POWO taxonomic status.
 name_search("Poa annua L.")
 
 # Or, search multiple names using purrr::map_dfr
-names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
+names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.", "Acacia torrei")
 
 if (requireNamespace("purrr", quietly = TRUE)) {
 names_out <- purrr::map_dfr(names, name_search)
 }
 
 # if your matched name is a homotypic synonym, you can replace it with the WCVP accepted name
-# Results retain the orignal search name, and all other fields are replaced with the accepted name
+# Results retain the original search name, and all other fields are replaced with the accepted name
 name_search("Acacia torrei", homosyn_replace = TRUE)
 
 # and same for multiple species

@@ -16,14 +16,14 @@
 #' name_search("Poa annua L.")
 #'
 #' # Or, search multiple names using purrr::map_dfr
-#' names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
+#' names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.", "Acacia torrei")
 #'
 #' if (requireNamespace("purrr", quietly = TRUE)) {
 #' names_out <- purrr::map_dfr(names, name_search)
 #' }
 #'
 #' # if your matched name is a homotypic synonym, you can replace it with the WCVP accepted name
-#' # Results retain the orignal search name, and all other fields are replaced with the accepted name
+#' # Results retain the original search name, and all other fields are replaced with the accepted name
 #' name_search("Acacia torrei", homosyn_replace = TRUE)
 #'
 #' # and same for multiple species
@@ -60,6 +60,29 @@ name_search = function(name, homosyn_replace = F){
   # join up the results
   gbif_knms = left_join(gbif_result, knms_check, by=c("scientificName"="submitted"))
 
+  # check if there were ANY matches in KNMS - if not return GBIF
+  if (!any(gbif_knms$matched)) {
+
+    # and filter on maximum confidence from GBIF search
+    # ensures there is only one result
+    gbif_knms = slice_max(gbif_knms, .data$confidence, n=1)
+
+    # return only the GBIF results
+    results = rename(gbif_knms,
+                     GBIF_key = usageKey,
+                     GBIF_name = scientificName,
+                     GBIF_rank = rank,
+                     GBIF_confidence = confidence,
+                     GBIF_family = family,
+                     WCVP_matched = matched,
+                     WCVP_ipni_id = ipni_id,
+                     WCVP_record = matched_record)
+    results$WCVP_status = NA_character_
+    results$WCVP_name = NA_character_
+
+    return(results)
+  }
+
   # filter only on those that matched KNMS
   gbif_knms = filter(gbif_knms, .data$matched == "TRUE")
 
@@ -73,23 +96,41 @@ name_search = function(name, homosyn_replace = F){
   # third search - check WCVP status
   wcvp_check = lookup_wcvp(gbif_knms$ipni_id)
   wcvp_check = tidy(wcvp_check)
-  # select the taxonomic status column
-  wcvp_check = select(wcvp_check, .data$id, .data$status)
+
+  # get taxonomic status and names
+  wcvp_check = select(wcvp_check, .data$id, .data$status, .data$name, .data$authors)
+
+  # check if homotypic synonym and if user wants to replace with accepted
+  if (homosyn_replace & wcvp_check$status == "homotypic synonym") {
+
+    wcvp_check = lookup_wcvp(wcvp_check$id)
+    acc = paste(wcvp_check$accepted$name, wcvp_check$accepted$author, sep = " ")
+
+    results = name_search(acc)
+    results = mutate(results, searchName = name)
+
+    return(results)
+
+
+  }
+
+  # join up the binomial and author strings
+  wcvp_check = unite(wcvp_check, name, c(name, authors), sep = " ")
 
   # join up results again
   results = left_join(gbif_knms, wcvp_check, by=c("ipni_id"="id"))
 
-  # replace homotypic synonym with accepted name
-  if (homosyn_replace & results$status == "homotypic synonym") {
-
-  # get the accepted name
-  acc = lookup_wcvp(results$ipni_id)
-  acc = paste(acc$accepted$name, acc$accepted$author, sep = " ")
-
-  # now plug back into name search
-  results = name_search(acc)
-  results = mutate(results, searchName = name)
-  }
+  # rename the results for clarity
+  results = rename(results, GBIF_key = usageKey,
+                   GBIF_name = scientificName,
+                   GBIF_rank = rank,
+                   GBIF_confidence = confidence,
+                   GBIF_family = family,
+                   WCVP_matched = matched,
+                   WCVP_ipni_id = ipni_id,
+                   WCVP_record = matched_record,
+                   WCVP_status = status,
+                   WCVP_name = name)
 
   return(results)
 }
@@ -102,18 +143,15 @@ name_search = function(name, homosyn_replace = F){
 name_tbl_ = function(query) {
   tibble(
     searchName = query,
-    usageKey = NA_integer_,
-    scientificName = NA_character_,
-    rank = NA_character_,
-    confidence = NA_integer_,
-    family = NA_character_,
-    matched = NA,
-    ipni_id = NA_character_,
-    matched_record = NA_character_,
-    status = NA_character_
+    GBIF_key = NA_integer_,
+    GBIF_name = NA_character_,
+    GBIF_rank = NA_character_,
+    GBIF_confidence = NA_integer_,
+    GBIF_family = NA_character_,
+    WCVP_matched = NA,
+    WCVP_ipni_id = NA_character_,
+    WCVP_record = NA_character_,
+    WCVP_status = NA_character_,
+    WCVP_name = NA_character_
   )
 }
-
-
-
-
