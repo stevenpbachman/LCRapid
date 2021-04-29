@@ -115,7 +115,7 @@ name_search = function(name, homosyn_replace = F){
   }
 
   # join up the binomial and author strings
-  wcvp_check = unite(wcvp_check, name, c(name, authors), sep = " ")
+  wcvp_check = tidyr::unite(wcvp_check, name, c(name, authors), sep = " ")
 
   # join up results again
   results = left_join(gbif_knms, wcvp_check, by=c("ipni_id"="id"))
