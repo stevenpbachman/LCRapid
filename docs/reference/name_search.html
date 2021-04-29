@@ -6,7 +6,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <title>Search plant name against GBIF, KNMS and POWO names backbone. — name_search • LCRapid</title>
+
 
 
 <!-- jquery -->
@@ -39,9 +41,10 @@
 
 
 
-<meta property="og:title" content="Search plant name against GBIF, KNMS and POWO names backbone. — name_search" />
-<meta property="og:description" content="Perform a fuzzy search against three names lists to get best
-match and POWO taxonomic status." />
+
+<meta property="og:title" content="Search plant name against GBIF, KNMS and POWO names backbone — name_search" />
+<meta property="og:description" content="Perform a fuzzy search against three names list to get best match and POWO taxonomic status" />
+
 
 
 
@@ -109,17 +112,21 @@ match and POWO taxonomic status." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
+
     <h1>Search plant name against GBIF, KNMS and POWO names backbone.</h1>
+
     <small class="dont-index">Source: <a href='https://github.com/stevenpbachman/LCRapid/blob/master/R/name_search.R'><code>R/name_search.R</code></a></small>
     <div class="hidden name"><code>name_search.Rd</code></div>
     </div>
 
     <div class="ref-description">
+
     <p>Perform a fuzzy search against three names lists to get best
 match and POWO taxonomic status.</p>
     </div>
 
     <pre class="usage"><span class='fu'>name_search</span><span class='op'>(</span><span class='va'>name</span>, homosyn_replace <span class='op'>=</span> <span class='cn'>F</span><span class='op'>)</span></pre>
+
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -129,11 +136,13 @@ match and POWO taxonomic status.</p>
       <td><p>A scientific plant species name. Better results can be obtained
 when author is included e.g. Poa annua L.</p></td>
     </tr>
+
     <tr>
       <th>homosyn_replace</th>
       <td><p>If matched name is classified as a homotypic synonym, the
 accepted name is returned</p></td>
     </tr>
+
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -143,6 +152,7 @@ accepted name is returned</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># single name search</span>
 <span class='fu'>name_search</span><span class='op'>(</span><span class='st'>"Poa annua L."</span><span class='op'>)</span>
+
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 11</span><span>
 #&gt;   searchName   GBIF_key GBIF_name    GBIF_rank GBIF_confidence GBIF_family
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>           </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      
@@ -171,6 +181,7 @@ accepted name is returned</p></td>
 <span class='op'>}</span>
 
 </div></span></pre>
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -182,7 +193,9 @@ accepted name is returned</p></td>
 
       <footer>
       <div class="copyright">
+
   <p>Developed by Steven Bachman, Barnaby Walker.</p>
+
 </div>
 
 <div class="pkgdown">

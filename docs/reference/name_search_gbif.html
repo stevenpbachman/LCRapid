@@ -144,19 +144,18 @@ of "no_match" under the <code>confidence</code> field.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># single name search</span>
 <span class='fu'>name_search_gbif</span><span class='op'>(</span><span class='st'>"Poa annua L."</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 4 x 6</span><span>
-#&gt;   searchName   usageKey scientificName             rank    confidence family 
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>           </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> Poa annua L.  2</span><span style='text-decoration: underline;'>704</span><span>179 Poa annua L.               SPECIES        100 Poaceae
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> Poa annua L.  8</span><span style='text-decoration: underline;'>422</span><span>205 Poa annua Cham. &amp; Schltdl. SPECIES         83 Poaceae
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> Poa annua L. 11</span><span style='text-decoration: underline;'>019</span><span>629 Poa annua L.Sp.Pl          SPECIES         78 Poaceae
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span> Poa annua L.  7</span><span style='text-decoration: underline;'>730</span><span>008 Poa annua Steud., 1854     SPECIES         78 Poaceae</div><div class='input'>
+
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 4 x 4</span><span>
+#&gt;   searchName   usageKey scientificName             confidence
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>           </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                           </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> Poa annua L.  2</span><span style='text-decoration: underline;'>704</span><span>179 Poa annua L.                      100
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span> Poa annua L.  8</span><span style='text-decoration: underline;'>422</span><span>205 Poa annua Cham. &amp; Schltdl.         83
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span> Poa annua L. 11</span><span style='text-decoration: underline;'>019</span><span>629 Poa annua L.Sp.Pl                  78
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span> Poa annua L.  7</span><span style='text-decoration: underline;'>730</span><span>008 Poa annua Steud., 1854             78</div><div class='input'>
 <span class='co'># Or, search multiple names using purrr::map_dfr</span>
 <span class='va'>names</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Poa annua L."</span>, <span class='st'>"Welwitschia mirabilis Hook.f."</span><span class='op'>)</span>
 
-<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"purrr"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='va'>names_out</span> <span class='op'>&lt;-</span> <span class='fu'>purrr</span><span class='fu'>::</span><span class='fu'><a href='https://purrr.tidyverse.org/reference/map.html'>map_dfr</a></span><span class='op'>(</span><span class='va'>names</span>, <span class='va'>name_search_gbif</span><span class='op'>)</span>
-<span class='op'>}</span>
+<span class='co'>#names_out &lt;- purrr::map_dfr(names, name_search_gbif)</span>
 
 </div></span></pre>
   </div>
@@ -170,7 +169,9 @@ of "no_match" under the <code>confidence</code> field.</p>
 
       <footer>
       <div class="copyright">
+
   <p>Developed by Steven Bachman, Barnaby Walker.</p>
+
 </div>
 
 <div class="pkgdown">
