@@ -2,27 +2,44 @@
 % Please edit documentation in R/name_search.R
 \name{name_search}
 \alias{name_search}
-\title{Search plant name against GBIF, KNMS and POWO names backbone}
+\title{Search plant name against GBIF, KNMS and POWO names backbone.}
 \usage{
-name_search(name)
+name_search(name, homosyn_replace = F)
 }
 \arguments{
 \item{name}{A scientific plant species name. Better results can be obtained
 when author is included e.g. Poa annua L.}
+
+\item{homosyn_replace}{If matched name is classified as a homotypic synonym, the
+accepted name is returned}
 }
 \value{
 Returns a data frame with ...
 }
 \description{
-Perform a fuzzy search against three names list to get best match and POWO taxonomic status
+Perform a fuzzy search against three names lists to get best
+match and POWO taxonomic status.
 }
 \examples{
 # single name search
 name_search("Poa annua L.")
 
 # Or, search multiple names using purrr::map_dfr
-names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.")
+names <- c("Poa annua L.", "Welwitschia mirabilis Hook.f.", "Acacia torrei")
+
+if (requireNamespace("purrr", quietly = TRUE)) {
 names_out <- purrr::map_dfr(names, name_search)
+}
+
+# if your matched name is a homotypic synonym, you can replace it with the WCVP accepted name
+# Results retain the original search name, and all other fields are replaced with the accepted name
+name_search("Acacia torrei", homosyn_replace = TRUE)
+
+# and same for multiple species
+if (requireNamespace("purrr", quietly = TRUE)) {
+names_out <- purrr::map_dfr(names, name_search, homosyn_replace = TRUE)
+}
+
 }
 \keyword{GBIF,}
 \keyword{KNMS,}
