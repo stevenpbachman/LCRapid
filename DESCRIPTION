@@ -30,8 +30,10 @@ Imports:
     jsonlite,
     dplyr,
     stringr,
-    kewr,
+    kewr (>= 0.5.2),
     rgbif,
     magrittr,
     rlang,
     tidyr
+Remotes:  
+    github::barnabywalker/kewr
