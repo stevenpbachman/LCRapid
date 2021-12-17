@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 # LCRapid
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/barnabywalker/LCRapid/workflows/R-CMD-check/badge.svg)](https://github.com/barnabywalker/LCRapid/actions)
 <!-- badges: end -->
 
 An R package to generate a rapid Least Concern Red List assessment for plant species
