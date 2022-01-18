@@ -5,6 +5,7 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/barnabywalker/LCRapid/workflows/R-CMD-check/badge.svg)](https://github.com/barnabywalker/LCRapid/actions)
 <!-- badges: end -->
 
 An R package to generate a rapid Least Concern Red List assessment for
@@ -48,11 +49,12 @@ The batch option allows you to run multiple species.
 library(LCRapid)
 ## check a name against GBIF, Kew Names Matching Service and Plants of the World Online
 name_search("Poa annua L.")
-#> # A tibble: 1 x 9
-#>   searchName   usageKey scientificName confidence family  matched ipni_id 
-#>   <chr>           <int> <chr>               <int> <chr>   <lgl>   <chr>   
-#> 1 Poa annua L.  2704179 Poa annua L.          100 Poaceae TRUE    320035-2
-#> # ... with 2 more variables: matched_record <chr>, status <chr>
+#> # A tibble: 1 x 11
+#>   searchName   GBIF_key GBIF_name    GBIF_rank GBIF_confidence GBIF_family
+#>   <chr>           <int> <chr>        <chr>               <int> <chr>      
+#> 1 Poa annua L.  2704179 Poa annua L. SPECIES               100 Poaceae    
+#> # ... with 5 more variables: WCVP_matched <lgl>, WCVP_ipni_id <chr>,
+#> #   WCVP_record <chr>, WCVP_status <chr>, WCVP_name <chr>
 
 #get_points()
 #etc...
